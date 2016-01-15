@@ -9,8 +9,8 @@ parser = argparse.ArgumentParser(description='command line options')
 parser.add_argument('-i', '--interface', dest='interface', action='store',
                     default='lo0', help='select interface to capture HTTP requests on')
 
-parser.add_argument('-v', '--verbose', dest='verbose', action='store',
-                    default=0, help='be more verbose, show HTTP requests as they are captured')
+parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
+                    default=False, help='be more verbose, show HTTP requests as they are captured')
 
 parser.add_argument('-o', '--redishost', dest='redishost', action='store',
                     default='localhost', help='redis server hostname')
@@ -23,6 +23,9 @@ parser.add_argument('-b', '--redisdb', dest='redisdb', action='store',
 
 parser.add_argument('-s', '--redispassword', dest='redispassword', action='store',
                     default='', help='redis server password')
+
+parser.add_argument('-n', '--sniffport', dest='sniffport', action='store',
+                    default=80, help='sniffer port')
 
 parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_true',
                     default=False, help='use promiscuous mode')
@@ -101,8 +104,9 @@ def main():
     print("Available devices: %s " % devices)
     print("Capturing on %s..." % options.interface)
 
-    sniffer = open_live(options.interface, 1024, options.promiscuous, 100)
-    sniffer.setfilter("tcp dst port 5000 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)")
+    sniffer = open_live(options.interface, 65536, options.promiscuous, 100)
+    sniffer.setfilter("tcp dst port " +
+                      options.sniffport+" and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)")
 
     while True:
         try:
