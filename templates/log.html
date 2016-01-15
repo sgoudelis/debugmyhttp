@@ -15,7 +15,6 @@
 
         ws.onmessage = function(ev){
             var json = JSON.parse(ev.data);
-            console.info(json);
             showLogItem(json);
         };
 
@@ -27,11 +26,13 @@
             showLogItem('error occurred');
         };
 
-        function showLogItem(json) {
-            if (json.request) {
-                printHttpRequest(json.request)
-            } else if (json.message) {
-                $log.prepend("<span>"+json.message+"</span>" + "<br/>");
+        function showLogItem(payload) {
+            if (payload.request) {
+                printHttpRequest(payload.request)
+            } else if (payload.message) {
+                $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
+            } else {
+                $log.prepend("<span>"+payload+"</span>" + "<br/>");
             }
         }
 
