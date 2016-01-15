@@ -118,14 +118,12 @@ def main():
         else:
 
             raw_http_request = get_raw_http_request(packet)
-            #raw_http_request = ''.join([c if ord(c) < 128 else ' ' for c in raw_http_request])
             hashes_list = get_client_hashes()
             client_hash = search_for_hash(hashes_list, raw_http_request)
             if client_hash:
                 log("Found HTTP request for hash %s" % client_hash, True)
                 for http_method in http_methods:
                     idx = raw_http_request.find(http_method)
-                    print idx
                     if idx > -1:
                         raw_http_request = raw_http_request[idx:]
                         break

@@ -52,7 +52,7 @@ class GenerateHashView(BaseHashViewRequestHandler):
     """
     def get(self):
 
-        unique_hash = hex(random.getrandbits(128))[2:-1]
+        unique_hash = hex(random.getrandbits(128))[2:10]
 
         self.client = brukva.Client(host=tornado.options.options.redishost, port=tornado.options.options.redisport,
                                     password=tornado.options.options.redispassword,
@@ -132,11 +132,6 @@ class Application(tornado.web.Application):
 
         # constructor
         tornado.web.Application.__init__(self, handlers, **settings)
-
-        # We create a database connection using brukva, which is a non-blocking, asynchronous driver for redis.
-        self.client = brukva.Client()
-        self.client.connect()
-
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
