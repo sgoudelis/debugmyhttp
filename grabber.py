@@ -106,7 +106,7 @@ def main():
 
     sniffer = open_live(options.interface, 65536, options.promiscuous, 100)
     sniffer.setfilter("tcp dst port " +
-                      options.sniffport+" and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)")
+                      str(options.sniffport)+" and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)")
 
     while True:
         try:
