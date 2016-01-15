@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTTP log</title>
+</head>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items[0] }}/ws');
+        var $log = $("div#log");
+        ws.onopen = function(){
+            showLogItem('Websocket open...');
+        };
+
+        ws.onmessage = function(ev){
+            var json = JSON.parse(ev.data);
+            console.info(json);
+            showLogItem(json);
+        };
+
+        ws.onclose = function(ev){
+            showLogItem('closed');
+        };
+
+        ws.onerror = function(ev){
+            showLogItem('error occurred');
+        };
+
+        function showLogItem(json) {
+            if (json.request) {
+                printHttpRequest(json.request)
+            } else if (json.message) {
+                $log.prepend("<span>"+json.message+"</span>" + "<br/>");
+            }
+        }
+
+        function printHttpRequest(request) {
+            $log.prepend(request + "<br/><br/>");
+        }
+
+    });
+</script>
+<body>
+<pre>
+<div id="log">
+
+</div>
+</pre>
+</body>
+</html>
