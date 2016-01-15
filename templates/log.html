@@ -31,8 +31,6 @@
                 printHttpRequest(payload.request)
             } else if (payload.message) {
                 $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
-            } else {
-                $log.prepend("<span>"+payload+"</span>" + "<br/>");
             }
         }
 
@@ -40,6 +38,11 @@
             $log.prepend(request + "<br/><br/>");
         }
 
+        setInterval(function() {
+            if (ws.bufferedAmount == 0)
+                var ping = JSON.stringify({'type': 'ping'})
+                ws.send(ping);
+        }, 2000 );
     });
 </script>
 <body>

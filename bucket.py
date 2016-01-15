@@ -99,9 +99,12 @@ class LogWebSocket(BaseLogWebSocket):
 
     def on_message(self, message):
         try:
-            self.write_message(message.body)
+            if type(message) == unicode:
+                self.write_message(message)
+            else:
+                self.write_message(message.body)
         except WebSocketClosedError, e:
-            logging.warn('WebsocketClosedError occured %s' % e)
+            logging.warn('WebsocketClosedError occured %s' % e.message)
 
     def on_close(self):
         logging.info('Websocket closed')
