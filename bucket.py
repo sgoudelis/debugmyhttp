@@ -113,7 +113,7 @@ class Application(tornado.web.Application):
     """
     def __init__(self):
 
-        # Handlers defining the url routing.
+        # url routing
         handlers = [
             (r'/generatekey', GenerateHashView),
             (r'/log/([a-zA-Z0-9]*)$', LogView),
@@ -121,13 +121,13 @@ class Application(tornado.web.Application):
             (r'/.*', CatchAllView),
         ]
 
-        # Settings:
+        # settings
         settings = dict(
                 auto_reload=True,
                 debug=True,
         )
 
-        # Call super constructor.
+        # constructor
         tornado.web.Application.__init__(self, handlers, **settings)
 
         # We create a database connection using brukva, which is a non-blocking, asynchronous driver for redis.

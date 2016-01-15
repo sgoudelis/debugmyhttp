@@ -111,6 +111,7 @@ def main():
             continue
         else:
             raw_http_request = get_raw_http_request(packet)
+            raw_http_request = ''.join([c if ord(c) < 128 else ' ' for c in raw_http_request])
             log(raw_http_request)
             hashes_list = get_client_hashes()
             client_hash = search_for_hash(hashes_list, raw_http_request)
@@ -118,6 +119,7 @@ def main():
                 log("Found HTTP request for hash %s" % client_hash, True)
                 channel_name = channel_name_prefix+client_hash
                 http_request = {'request': raw_http_request}
+
                 redis_conn.publish(channel_name, json.dumps(http_request))
 
 
