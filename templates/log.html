@@ -25,6 +25,14 @@
             padding-right: 10px;
         }
 
+        .nopadding {
+            padding: 0px !important;
+        }
+
+        pre {
+            margin: 0 0 0px;
+
+        }
 
         .httprequest_container {
             font-size: 11px;
@@ -81,11 +89,11 @@
 
         function printHttpRequest(request) {
             var html = "";
-            html += '<div class="panel panel-primary">'
+            html += '<div class="panel panel-primary">';
             html += '<div class="panel-heading httprequest_header">';
             html += '<h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+'From: '+request['source_ip']+'</h3>';
             html += '</div>';
-            html += '<div class="panel-body"><pre class="httprequest_container">';
+            html += '<div class="nopadding panel-body"><pre class="httprequest_container">';
             html += request['request'];
             html += '</pre></div>';
             html += '</div>';
