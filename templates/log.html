@@ -82,6 +82,8 @@
         function showLogItem(payload) {
             if (payload['request']) {
                 printHttpRequest(payload)
+            }  else if (payload['type']=='alert') {
+                $log.prepend('<div class="alert alert-danger" role="alert"><strong>Alert! </strong>'+payload['message']+'</div>');
             } else if (payload['message']) {
                 $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
             }
@@ -97,7 +99,6 @@
             html += request['request'];
             html += '</pre></div>';
             html += '</div>';
-
             $log.prepend(html);
         }
 

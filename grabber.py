@@ -33,7 +33,7 @@ parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_tru
                     default=False, help='use promiscuous mode')
 
 parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
-                    default=1000, help='request limit per key')
+                    default=10, help='request limit per key')
 
 options = parser.parse_args()
 
@@ -131,6 +131,8 @@ def main():
             # if hash is found process it
             if client_hash:
 
+                channel_name = channel_name_prefix+client_hash
+
                 # get request count for hash key
                 try:
                     request_count = int(redis_conn.get(counter_prefix+str(client_hash)))
@@ -138,8 +140,13 @@ def main():
                     request_count = 0
 
                 # check to see if we are over the limit
-                if int(request_count) > options.requestlimit:
-                    log("Limit of %s reached for key %s " % (options.requestlimit, client_hash), True)
+                if int(request_count) > int(options.requestlimit):
+                    message = "Limit of %s reached for key %s " % (options.requestlimit, client_hash)
+                    log(message, True)
+                    redis_conn.publish(channel_name, json.dumps({'message': message, 'type': 'alert'}))
+
+                    # delete this key and stop looking for these requests
+                    redis_conn.delete(hash_set_prefix+str(client_hash))
                     continue
 
                 log("Found HTTP request for hash %s" % client_hash, True)
@@ -162,7 +169,6 @@ def main():
                         raw_http_request = raw_http_request[idx:]
                         break
                 log(raw_http_request)
-                channel_name = channel_name_prefix+client_hash
                 http_request = {'request': raw_http_request, 'source_ip': source_ip}
 
                 # push the http request down the pipe
