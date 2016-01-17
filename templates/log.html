@@ -3,8 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>HTTP log</title>
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <style type="text/css">
+
+        #log {
+            overflow-y: scroll;
+            height: 600px;
+        }
+
+
+        .httprequest_container {
+            border-radius: 0px 0px 7px 7px;
+            -moz-border-radius: 0px 0px 7px 7px;
+            -webkit-border-radius: 0px 0px 7px 7px;
+        }
+
+        .httprequest_header {
+            border-radius: 7px 7px 0px 0px;
+            -moz-border-radius: 7px 7px 0px 0px;
+            -webkit-border-radius: 7px 7px 0px 0px;
+            border-top: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            background-color: #d3d3d3;
+            color: black;
+        }
+
+    </style>
 </head>
-<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+
 <script>
     $(document).ready(function(){
         var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items[0] }}/ws');
@@ -28,28 +69,37 @@
 
         function showLogItem(payload) {
             if (payload.request) {
-                printHttpRequest(payload.request)
+                printHttpRequest(payload)
             } else if (payload.message) {
                 $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
             }
         }
 
         function printHttpRequest(request) {
-            $log.prepend(request + "<br/><br/>");
+
+            $log.prepend('<div class="httprequest_header">'+request['source_ip']+'</div><pre class="httprequest_container">'+request['request']+'</pre>');
         }
 
         setInterval(function() {
             if (ws.bufferedAmount == 0)
                 var ping = JSON.stringify({'type': 'ping'})
                 ws.send(ping);
-        }, 2000 );
+        }, 10000 );
     });
 </script>
 <body>
-<pre>
-<div id="log">
+<div class="container">
+    <div>
+        <h3>Debug HTTP calls for {{ items[0] }}</h3>
 
+
+    </div>
+
+
+    <div id="log">
+
+    </div>
 </div>
-</pre>
+
 </body>
 </html>

@@ -120,7 +120,6 @@ def main():
         except PcapError:
             continue
         else:
-
             raw_http_request = get_raw_http_request(packet)
             hashes_list = get_client_hashes()
 
@@ -142,6 +141,13 @@ def main():
                     continue
 
                 log("Found HTTP request for hash %s" % client_hash, True)
+
+                # extract source ip address
+                decoder = EthDecoder()
+                ethernet_frame = decoder.decode(packet)
+                ip_header = ethernet_frame.child()
+                source_ip = ip_header.get_ip_address(2)
+
                 for http_method in http_methods:
                     idx = raw_http_request.find(http_method)
                     if idx > -1:
@@ -149,7 +155,7 @@ def main():
                         break
                 log(raw_http_request)
                 channel_name = channel_name_prefix+client_hash
-                http_request = {'request': raw_http_request}
+                http_request = {'request': raw_http_request, 'source_ip': source_ip}
 
                 # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))

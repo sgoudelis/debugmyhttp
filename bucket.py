@@ -110,9 +110,9 @@ class LogWebSocket(BaseLogWebSocket):
         channel_name = str(channel_name_prefix+"#"+bucket)
 
         self.redis_async_connection = brukva.Client(host=tornado.options.options.redishost,
-                                              port=tornado.options.options.redisport,
-                                              password=tornado.options.options.redispassword,
-                                              selected_db=tornado.options.options.redisdb)
+                                                    port=tornado.options.options.redisport,
+                                                    password=tornado.options.options.redispassword,
+                                                    selected_db=tornado.options.options.redisdb)
 
         # connect to redis
         self.redis_async_connection.connect()
