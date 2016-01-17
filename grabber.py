@@ -95,7 +95,7 @@ def get_raw_http_request(packet):
     raw_http_request = decoded_packet.get_packet()
 
     # return http request substring
-    return raw_http_request[56:]
+    return raw_http_request
 
 
 def main():
