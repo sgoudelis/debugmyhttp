@@ -50,8 +50,6 @@ class CatchAllView(tornado.web.RequestHandler):
     def delete(self):
         self.finish()
 
-def onresult(result):
-        print result
 
 class GenerateHashView(BaseHashViewRequestHandler):
     """
@@ -71,7 +69,10 @@ class GenerateHashView(BaseHashViewRequestHandler):
                                                                                          self.request.remote_ip))
 
         # check how many keys are created from the same ip address
-        client_hits = self.redis_sync_connection.get(client_ip_prefix+str(client_ip))
+        try:
+            client_hits = int(self.redis_sync_connection.get(client_ip_prefix+str(client_ip)))
+        except TypeError:
+            client_hits = 0
 
         if client_hits > tornado.options.options.clientlimit:
             self.finish(json.dumps({'error': "limit reached"}))
@@ -117,7 +118,7 @@ class LogWebSocket(BaseLogWebSocket):
         # connect to redis
         self.redis_async_connection.connect()
 
-        # Subscribe to the given chat room.
+        # subscribe
         self.redis_async_connection.subscribe(channel_name)
 
         self.redis_async_connection.listen(self.on_message)
