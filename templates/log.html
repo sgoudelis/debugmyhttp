@@ -27,19 +27,11 @@
 
 
         .httprequest_container {
-            border-radius: 0px 0px 7px 7px;
-            -moz-border-radius: 0px 0px 7px 7px;
-            -webkit-border-radius: 0px 0px 7px 7px;
             font-size: 11px;
+            border: 0px none !important;
         }
 
         .httprequest_header {
-            border-radius: 7px 7px 0px 0px;
-            -moz-border-radius: 7px 7px 0px 0px;
-            -webkit-border-radius: 7px 7px 0px 0px;
-            border-top: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            border-right: 1px solid #ccc;
             padding: 10px;
             background-color: #d3d3d3;
             color: black;
@@ -47,6 +39,15 @@
         }
 
     </style>
+
+
+    <script type="text/javascript">
+        function clearLog() {
+            var $log = $("div#log");
+            $log.html("");
+        }
+    </script>
+
 </head>
 
 <script>
@@ -79,15 +80,15 @@
         }
 
         function printHttpRequest(request) {
-
             var html = "";
-            html += '<div class="httprequest_header">';
-            html += '<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> ';
-            html += 'From: '+request['source_ip'];
+            html += '<div class="panel panel-primary">'
+            html += '<div class="panel-heading httprequest_header">';
+            html += '<h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+'From: '+request['source_ip']+'</h3>';
             html += '</div>';
-            html += '<pre class="httprequest_container">';
+            html += '<div class="panel-body"><pre class="httprequest_container">';
             html += request['request'];
-            html += '</pre>';
+            html += '</pre></div>';
+            html += '</div>';
 
             $log.prepend(html);
         }
@@ -103,10 +104,12 @@
 <div class="container">
     <div>
         <h3>Debug HTTP calls for {{ items[0] }}</h3>
-
-
+        <div style="text-align: right">
+            <p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="javascript:clearLog();">clear</button>
+            </p>
+        </div>
     </div>
-
 
     <div id="log">
 
