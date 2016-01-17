@@ -30,6 +30,7 @@
             border-radius: 0px 0px 7px 7px;
             -moz-border-radius: 0px 0px 7px 7px;
             -webkit-border-radius: 0px 0px 7px 7px;
+            font-size: 11px;
         }
 
         .httprequest_header {
@@ -42,6 +43,7 @@
             padding: 10px;
             background-color: #d3d3d3;
             color: black;
+            font-weight: bold;
         }
 
     </style>
@@ -69,16 +71,25 @@
         };
 
         function showLogItem(payload) {
-            if (payload.request) {
+            if (payload['request']) {
                 printHttpRequest(payload)
-            } else if (payload.message) {
+            } else if (payload['message']) {
                 $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
             }
         }
 
         function printHttpRequest(request) {
 
-            $log.prepend('<div class="httprequest_header">'+request['source_ip']+'</div><pre class="httprequest_container">'+request['request']+'</pre>');
+            var html = "";
+            html += '<div class="httprequest_header">';
+            html += '<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> ';
+            html += 'From: '+request['source_ip'];
+            html += '</div>';
+            html += '<pre class="httprequest_container">';
+            html += request['request'];
+            html += '</pre>';
+
+            $log.prepend(html);
         }
 
         setInterval(function() {
