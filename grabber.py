@@ -1,8 +1,10 @@
 from pcapy import open_live, findalldevs, PcapError
+from impacket.ImpactPacket import *
 from impacket.ImpactDecoder import *
 import argparse
 import redis
 import json
+from sys import platform as _platform
 
 parser = argparse.ArgumentParser(description='command line options')
 
@@ -31,7 +33,7 @@ parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_tru
                     default=False, help='use promiscuous mode')
 
 parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
-                    default=10, help='request limit per key')
+                    default=1000, help='request limit per key')
 
 options = parser.parse_args()
 
@@ -143,10 +145,16 @@ def main():
                 log("Found HTTP request for hash %s" % client_hash, True)
 
                 # extract source ip address
+
                 decoder = EthDecoder()
                 ethernet_frame = decoder.decode(packet)
                 ip_header = ethernet_frame.child()
-                source_ip = ip_header.get_ip_address(2)
+                if _platform == "linux" or _platform == "linux2":
+                    source_ip = ip_header.get_ip_src()
+                elif _platform == "darwin":
+                    source_ip = ip_header.get_ip_address(2)
+                elif _platform == "win32":
+                    pass
 
                 for http_method in http_methods:
                     idx = raw_http_request.find(http_method)
