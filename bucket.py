@@ -7,6 +7,7 @@ import brukva
 import logging
 import random
 import json
+import redis
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
@@ -15,18 +16,22 @@ tornado.options.define("redishost", default="127.0.0.1", help="redis server", ty
 tornado.options.define("redisport", default=6379, help="redis port", type=int)
 tornado.options.define("redisdb", default=0, help="redis database", type=int)
 tornado.options.define("redispassword", default="", help="redis server password", type=str)
-tornado.options.define("channelttl", default=300, help="redis hash key ttl", type=int)
+tornado.options.define("channelttl", default=3000, help="redis hash key ttl", type=int)
+tornado.options.define("clientlimit", default=100, help="client keys limit per ip", type=int)
 
-hash_set_prefix = 'client#'
+hash_set_prefix = "client#"
+client_ip_prefix = "client_ip#"
 channel_name_prefix = "httprequests"
 
 
 class BaseHashViewRequestHandler(tornado.web.RequestHandler):
-    client = None
+    redis_async_connection = None
+    redis_sync_connection = None
 
 
 class BaseLogWebSocket(WebSocketHandler):
-    client = None
+    redis_async_connection = None
+    redis_sync_connection = None
 
 
 class CatchAllView(tornado.web.RequestHandler):
@@ -45,6 +50,8 @@ class CatchAllView(tornado.web.RequestHandler):
     def delete(self):
         self.finish()
 
+def onresult(result):
+        print result
 
 class GenerateHashView(BaseHashViewRequestHandler):
     """
@@ -54,15 +61,33 @@ class GenerateHashView(BaseHashViewRequestHandler):
 
         unique_hash = hex(random.getrandbits(128))[2:10]
 
-        self.client = brukva.Client(host=tornado.options.options.redishost, port=tornado.options.options.redisport,
-                                    password=tornado.options.options.redispassword,
-                                    selected_db=tornado.options.options.redisdb)
+        self.redis_sync_connection = redis.StrictRedis(host=tornado.options.options.redishost,
+                                                       port=tornado.options.options.redisport,
+                                                       password=tornado.options.options.redispassword,
+                                                       db=tornado.options.options.redisdb)
 
-        # connect to redis
-        self.client.connect()
+        # get real ip address
+        client_ip = self.request.headers.get('X-Forwarded-For', self.request.headers.get('X-Real-Ip',
+                                                                                         self.request.remote_ip))
 
-        self.client.setex(hash_set_prefix+unique_hash, tornado.options.options.channelttl, 1)
+        # check how many keys are created from the same ip address
+        client_hits = self.redis_sync_connection.get(client_ip_prefix+str(client_ip))
 
+        if client_hits > tornado.options.options.clientlimit:
+            self.finish(json.dumps({'error': "limit reached"}))
+            return
+
+        # create a value for the key
+        value = {'ip': client_ip}
+
+        # set the key in redis
+        self.redis_sync_connection.setex(hash_set_prefix+unique_hash, tornado.options.options.channelttl,
+                                         json.dumps(value))
+
+        # set the ip as key to keep track how many key there are for that ip
+        self.redis_sync_connection.incrby(client_ip_prefix+str(client_ip), 1)
+
+        # finish the request
         self.finish(json.dumps({'key': unique_hash}))
 
 
@@ -84,18 +109,19 @@ class LogWebSocket(BaseLogWebSocket):
 
         channel_name = str(channel_name_prefix+"#"+bucket)
 
-        self.client = brukva.Client(host=tornado.options.options.redishost, port=tornado.options.options.redisport,
-                                    password=tornado.options.options.redispassword,
-                                    selected_db=tornado.options.options.redisdb)
+        self.redis_async_connection = brukva.Client(host=tornado.options.options.redishost,
+                                              port=tornado.options.options.redisport,
+                                              password=tornado.options.options.redispassword,
+                                              selected_db=tornado.options.options.redisdb)
 
         # connect to redis
-        self.client.connect()
+        self.redis_async_connection.connect()
 
         # Subscribe to the given chat room.
-        self.client.subscribe(channel_name)
+        self.redis_async_connection.subscribe(channel_name)
 
-        self.client.listen(self.on_message)
-        logging.info('New viewer connected to observe flow %s' % channel_name)
+        self.redis_async_connection.listen(self.on_message)
+        logging.info('New viewer connected to observe flow for channel: %s' % channel_name)
 
     def on_message(self, message):
         try:

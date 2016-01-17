@@ -30,12 +30,16 @@ parser.add_argument('-n', '--sniffport', dest='sniffport', action='store',
 parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_true',
                     default=False, help='use promiscuous mode')
 
+parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
+                    default=10, help='request limit per key')
+
 options = parser.parse_args()
 
 redis_conn = redis.Redis(host=options.redishost, port=options.redisport, db=options.redisdb,
                          password=options.redispassword)
 
 hash_set_prefix = 'client#'
+counter_prefix = 'counter#'
 channel_name_prefix = "httprequests#"
 
 
@@ -119,8 +123,24 @@ def main():
 
             raw_http_request = get_raw_http_request(packet)
             hashes_list = get_client_hashes()
+
+            # search for the hash in the raw request
             client_hash = search_for_hash(hashes_list, raw_http_request)
+
+            # if hash is found process it
             if client_hash:
+
+                # get request count for hash key
+                try:
+                    request_count = int(redis_conn.get(counter_prefix+str(client_hash)))
+                except TypeError:
+                    request_count = 0
+
+                # check to see if we are over the limit
+                if int(request_count) > options.requestlimit:
+                    log("Limit of %s reached for key %s " % (options.requestlimit, client_hash), True)
+                    continue
+
                 log("Found HTTP request for hash %s" % client_hash, True)
                 for http_method in http_methods:
                     idx = raw_http_request.find(http_method)
@@ -130,7 +150,12 @@ def main():
                 log(raw_http_request)
                 channel_name = channel_name_prefix+client_hash
                 http_request = {'request': raw_http_request}
+
+                # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))
+
+                # increase count for hash key
+                redis_conn.incrby(counter_prefix+str(client_hash), 1)
 
 
 if __name__ == "__main__":
