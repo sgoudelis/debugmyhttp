@@ -20,8 +20,8 @@
     <style type="text/css">
 
         #log {
-            overflow-y: scroll;
-            height: 600px;
+            overflow-y: auto;
+            height: 450px;
             padding-right: 10px;
         }
 
@@ -110,14 +110,11 @@
     });
 </script>
 <body>
-<div class="container">
-    <div>
-        <h3>Debug HTTP calls for {{ items[0] }}</h3>
-        <div style="text-align: right">
-            <p>
-            <button type="button" class="btn btn-primary btn-sm" onclick="javascript:clearLog();">clear</button>
-            </p>
-        </div>
+<div class="">
+    <div style="text-align: right">
+        <p>
+        <button type="button" class="btn btn-primary btn-sm" onclick="javascript:clearLog();">clear</button>
+        </p>
     </div>
 
     <div id="log">

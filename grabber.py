@@ -33,7 +33,7 @@ parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_tru
                     default=False, help='use promiscuous mode')
 
 parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
-                    default=10, help='request limit per key')
+                    default=50, help='request limit per key')
 
 options = parser.parse_args()
 

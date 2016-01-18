@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug your HTTP calls from your iOS, Android, Website, Backend system</title>
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" type="text/css"/>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            ZeroClipboard.config( { swfPath: "./ZeroClipboard.swf" } );
+            var client = new ZeroClipboard($("#btnCopy"));
+
+            client.on("copy", function (event) {
+                var copiedValue = $('#txtTestInput').val();
+                var clipboard = event.clipboardData;
+                clipboard.setData("text/plain", copiedValue);
+                alert('The copied value is: ' + copiedValue);
+            });
+
+
+            $(".fancybox").fancybox({
+                beforeLoad: function() {
+                    var marker_key = $('#marker_key_field').val();
+                    $('#loggerframe').attr('src', '//'+document.location.hostname+':'+document.location.port+'/log/'+marker_key);
+                },
+                afterClose: function () {
+                    $('#loggerframe').attr('src', "");
+                },
+            });
+
+        });
+
+        function getMarkerKey() {
+            var marker_key_field = $('#marker_key_field')
+            $.getJSON('//'+document.location.hostname+":"+document.location.port+'/generatekey', function(data){
+                if(data['key']) {
+                    marker_key_field.val(data['key']);
+                } else if(data['error']) {
+                    marker_key_field.val(data['error']);
+                }
+            });
+        }
+    </script>
+
+    <style type="text/css">
+
+
+
+    </style>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-14">
+
+            <h1 class="text-center">Want a way to debug your HTTP calls made by your apps? </h1>
+            <h3 class="text-center">Get a key and use it in your HTTP calls</h3>
+
+            <br/>
+            <br/>
+
+
+
+            <p class="text-center"><button type="button" class="btn btn-primary btn-lg">Get your test URL</button></p>
+
+            <p class="text-center"><strong>- or -</strong></p>
+
+            <div style="width: 50%; margin: 0 auto;">
+
+                <p class="text-center">Get your key and use it anywhere in your HTTP call:</p>
+
+                <div class="row">
+                    <div class="col-xs-3"><button onclick="javascript:getMarkerKey();" class="btn btn-info">Get marker key</button></div>
+                        <div class="col-xs-9"><div class="input-group"><input id="marker_key_field" type="text" class="form-control" disabled placeholder="HTTP marker key" style="text-align:center;">
+                        <span class="input-group-btn">
+                            <button id="btnCopy" class="btn btn-primary">Copy to clipboard</button>
+                        </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br/>
+
+                <p class="text-center"><strong>- finally -</strong></p>
+
+                <!-- Button trigger modal -->
+                <div style="width: 50%; margin: 0 auto;">
+                    <p class="text-center">
+                        <button href="#logger" class="fancybox btn btn-primary btn-lg">Show me the calls</button>
+
+                    </p>
+                </div>
+                <br/><br/>
+
+                <p class="">
+                    In your path:
+                    <pre>http://mytestserver/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
+                </p>
+
+                <p class="">
+                    In your HTTP headers:
+                    <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
+                </p>
+
+                <p class="">
+                    Put it in the HTTP body with:
+                <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://mytestserver/testmycall/</pre>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none"><div class="fancybox" id="logger"><iframe id="loggerframe" width="900" height="500" src="http://ixia:5000/log/193a1fd5"></iframe></div></div>
+</body>
+</html>

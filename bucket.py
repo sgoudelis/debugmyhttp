@@ -17,7 +17,7 @@ tornado.options.define("redisport", default=6379, help="redis port", type=int)
 tornado.options.define("redisdb", default=0, help="redis database", type=int)
 tornado.options.define("redispassword", default="", help="redis server password", type=str)
 tornado.options.define("channelttl", default=3000, help="redis hash key ttl", type=int)
-tornado.options.define("clientlimit", default=100, help="client keys limit per ip", type=int)
+tornado.options.define("clientlimit", default=40, help="client keys limit per ip", type=int)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
@@ -101,6 +101,15 @@ class LogView(tornado.web.RequestHandler):
         self.render("templates/log.html", title="Logger", items=items)
 
 
+class HomeView(tornado.web.RequestHandler):
+    """
+    View for the logger where the user will observe HTTP calls
+    """
+    def get(self):
+        items = []
+        self.render("templates/index.html", title="Logger", items=items)
+
+
 class LogWebSocket(BaseLogWebSocket):
     """
     Websockets interface
@@ -146,6 +155,7 @@ class Application(tornado.web.Application):
 
         # url routing
         handlers = [
+            (r'/', HomeView),
             (r'/generatekey', GenerateHashView),
             (r'/log/([a-zA-Z0-9]*)$', LogView),
             (r'/log/([a-zA-Z0-9]*)/ws', LogWebSocket),
