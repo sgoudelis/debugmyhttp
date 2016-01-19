@@ -24,6 +24,14 @@ client_ip_prefix = "client_ip#"
 channel_name_prefix = "httprequests"
 
 
+def generate_marker_key():
+    """
+    Generate a key
+    :return:
+    """
+    unique_hash = hex(random.getrandbits(128))[2:10]
+    return unique_hash
+
 class BaseHashViewRequestHandler(tornado.web.RequestHandler):
     redis_async_connection = None
     redis_sync_connection = None
@@ -57,7 +65,7 @@ class GenerateHashView(BaseHashViewRequestHandler):
     """
     def get(self):
 
-        unique_hash = hex(random.getrandbits(128))[2:10]
+        unique_hash = generate_marker_key()
 
         self.redis_sync_connection = redis.StrictRedis(host=tornado.options.options.redishost,
                                                        port=tornado.options.options.redisport,

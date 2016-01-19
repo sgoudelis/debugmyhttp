@@ -21,8 +21,7 @@
 
         #log {
             overflow-y: auto;
-            height: 450px;
-            padding-right: 10px;
+            height: 100%;
         }
 
         .nopadding {
@@ -48,7 +47,6 @@
 
     </style>
 
-
     <script type="text/javascript">
         function clearLog() {
             var $log = $("div#log");
@@ -60,6 +58,9 @@
 
 <script>
     $(document).ready(function(){
+        // set the hostname in the examples
+        $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
+
         var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items[0] }}/ws');
         var $log = $("div#log");
         ws.onopen = function(){
@@ -91,7 +92,7 @@
 
         function printHttpRequest(request) {
             var html = "";
-            html += '<div class="panel panel-primary">';
+            html += '<div class="panel panel-default">';
             html += '<div class="panel-heading httprequest_header">';
             html += '<h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+'From: '+request['source_ip']+'</h3>';
             html += '</div>';
@@ -110,10 +111,12 @@
     });
 </script>
 <body>
-<div class="">
-    <div style="text-align: right">
+<div class="container">
+
+    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items[0] }}</strong></pre>
+    <div style="text-align: left">
         <p>
-        <button type="button" class="btn btn-primary btn-sm" onclick="javascript:clearLog();">clear</button>
+        <button type="button" class="btn btn-default btn-sm" onclick="javascript:clearLog();">clear</button>
         </p>
     </div>
 

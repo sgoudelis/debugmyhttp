@@ -27,31 +27,31 @@
 
         $(document).ready(function(){
 
-            ZeroClipboard.config( { swfPath: "./ZeroClipboard.swf" } );
-            var client = new ZeroClipboard($("#btnCopy"));
+            // set the hostname in the examples
+            $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
 
-            client.on("copy", function (event) {
-                var copiedValue = $('#txtTestInput').val();
-                var clipboard = event.clipboardData;
-                clipboard.setData("text/plain", copiedValue);
-                alert('The copied value is: ' + copiedValue);
+            var client = new ZeroClipboard( $('.clip_button') );
+
+            client.on( 'ready', function(event) {
+                // console.log( 'movie is loaded' );
+
+                client.on( 'copy', function(event) {
+                    event.clipboardData.setData('text/plain', event.target.innerHTML);
+                } );
+
+                client.on( 'aftercopy', function(event) {
+                    console.log('Copied text to clipboard: ' + event.data['text/plain']);
+                } );
+            } );
+
+            client.on( 'error', function(event) {
+                // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+                ZeroClipboard.destroy();
             });
-
-
-            $(".fancybox").fancybox({
-                beforeLoad: function() {
-                    var marker_key = $('#marker_key_field').val();
-                    $('#loggerframe').attr('src', '//'+document.location.hostname+':'+document.location.port+'/log/'+marker_key);
-                },
-                afterClose: function () {
-                    $('#loggerframe').attr('src', "");
-                },
-            });
-
         });
 
-        function getMarkerKey() {
-            var marker_key_field = $('#marker_key_field')
+        function getMarkerKey(el) {
+            var marker_key_field = $('#'+el);
             $.getJSON('//'+document.location.hostname+":"+document.location.port+'/generatekey', function(data){
                 if(data['key']) {
                     marker_key_field.val(data['key']);
@@ -60,11 +60,24 @@
                 }
             });
         }
+
+        function gotoLoggerPage(button) {
+            // window.location.href = '//'+document.location.hostname+":"+document.location.port+'/geturl';
+            var button = $(button);
+            $.getJSON('//'+document.location.hostname+":"+document.location.port+'/generatekey', function(data){
+                if(data['key']) {
+                    window.location.href = '//'+document.location.hostname+":"+document.location.port+'/log/'+data['key'];
+                } else if(data['error']) {
+                    button.addClass('btn-danger').removeClass('btn-primary').addClass('disabled');
+                    button.html(data['error']);
+                }
+            });
+
+        }
+
     </script>
 
     <style type="text/css">
-
-
 
     </style>
 
@@ -81,9 +94,7 @@
             <br/>
             <br/>
 
-
-
-            <p class="text-center"><button type="button" class="btn btn-primary btn-lg">Get your test URL</button></p>
+            <p class="text-center"><button onclick="javascript:gotoLoggerPage(this);" type="button" class="btn btn-primary btn-lg">Get your test URL</button></p>
 
             <p class="text-center"><strong>- or -</strong></p>
 
@@ -92,10 +103,10 @@
                 <p class="text-center">Get your key and use it anywhere in your HTTP call:</p>
 
                 <div class="row">
-                    <div class="col-xs-3"><button onclick="javascript:getMarkerKey();" class="btn btn-info">Get marker key</button></div>
+                    <div class="col-xs-3"><button onclick="javascript:getMarkerKey('marker_key_field');" class="btn btn-info">Get marker key</button></div>
                         <div class="col-xs-9"><div class="input-group"><input id="marker_key_field" type="text" class="form-control" disabled placeholder="HTTP marker key" style="text-align:center;">
                         <span class="input-group-btn">
-                            <button id="btnCopy" class="btn btn-primary">Copy to clipboard</button>
+                            <button id="copy-button" data-clipboard-text="Copy Me!" title="Click to copy me." class="btn btn-primary">copy</button>
                         </span>
                         </div>
                     </div>
@@ -117,7 +128,7 @@
 
                 <p class="">
                     In your path:
-                    <pre>http://mytestserver/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
+                    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
                 </p>
 
                 <p class="">
@@ -127,13 +138,12 @@
 
                 <p class="">
                     Put it in the HTTP body with:
-                <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://mytestserver/testmycall/</pre>
+                <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://<span class="self_hostname"></span>/testmycall/</pre>
                 </p>
 
             </div>
         </div>
     </div>
 </div>
-<div style="display:none"><div class="fancybox" id="logger"><iframe id="loggerframe" width="900" height="500" src="http://ixia:5000/log/193a1fd5"></iframe></div></div>
 </body>
 </html>
