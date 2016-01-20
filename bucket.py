@@ -8,6 +8,7 @@ import logging
 import random
 import json
 import redis
+import os
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
@@ -175,6 +176,7 @@ class Application(tornado.web.Application):
         settings = dict(
                 auto_reload=True,
                 debug=True,
+                static_path=os.path.join(os.path.dirname(__file__), "static")
         )
 
         # constructor

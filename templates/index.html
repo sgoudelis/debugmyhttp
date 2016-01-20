@@ -4,77 +4,65 @@
     <meta charset="UTF-8">
     <title>Debug your HTTP calls from your iOS, Android, Website, Backend system</title>
 
-    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" type="text/css"/>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
+    {% include head_section.html %}
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript">
 
-        $(document).ready(function(){
+        $(document).ready(function () {
 
             // set the hostname in the examples
-            $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
+            $('span.self_hostname').html(document.location.hostname + ":" + document.location.port);
 
-            var client = new ZeroClipboard( $('.clip_button') );
+            var client = new ZeroClipboard($('.clip_button'));
 
-            client.on( 'ready', function(event) {
+            client.on('ready', function (event) {
                 // console.log( 'movie is loaded' );
 
-                client.on( 'copy', function(event) {
+                client.on('copy', function (event) {
                     event.clipboardData.setData('text/plain', event.target.innerHTML);
-                } );
+                });
 
-                client.on( 'aftercopy', function(event) {
+                client.on('aftercopy', function (event) {
                     console.log('Copied text to clipboard: ' + event.data['text/plain']);
-                } );
-            } );
+                });
+            });
 
-            client.on( 'error', function(event) {
+            client.on('error', function (event) {
                 // console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
                 ZeroClipboard.destroy();
             });
         });
 
         function getMarkerKey(el) {
-            var marker_key_field = $('#'+el);
-            $.getJSON('//'+document.location.hostname+":"+document.location.port+'/generatekey', function(data){
-                if(data['key']) {
+            var marker_key_field = $('#' + el);
+            $.getJSON('//' + document.location.hostname + ":" + document.location.port + '/generatekey', function (data) {
+                if (data['key']) {
                     marker_key_field.val(data['key']);
-                } else if(data['error']) {
+                    $('#showmethecallsbutton').removeClass('disabled');
+                } else if (data['error']) {
                     marker_key_field.val(data['error']);
                 }
             });
         }
 
-        function gotoLoggerPage(button) {
-            // window.location.href = '//'+document.location.hostname+":"+document.location.port+'/geturl';
+        function getKeyGoLoggerPage(button) {
             var button = $(button);
-            $.getJSON('//'+document.location.hostname+":"+document.location.port+'/generatekey', function(data){
-                if(data['key']) {
-                    window.location.href = '//'+document.location.hostname+":"+document.location.port+'/log/'+data['key'];
-                } else if(data['error']) {
+            $.getJSON('//' + document.location.hostname + ":" + document.location.port + '/generatekey', function (data) {
+                if (data['key']) {
+                    window.location.href = '//' + document.location.hostname + ":" + document.location.port + '/log/' + data['key'];
+                } else if (data['error']) {
                     button.addClass('btn-danger').removeClass('btn-primary').addClass('disabled');
                     button.html(data['error']);
                 }
             });
-
         }
 
+        function gotoLoggerPage() {
+            var marker_key = $('#marker_key_field').val();
+            window.location.href = '//' + document.location.hostname + ":" + document.location.port + '/log/' + marker_key;
+        }
     </script>
 
     <style type="text/css">
@@ -84,6 +72,7 @@
 </head>
 
 <body>
+{% include navbar.html %}
 <div class="container">
     <div class="row">
         <div class="col-md-14">
@@ -94,7 +83,11 @@
             <br/>
             <br/>
 
-            <p class="text-center"><button onclick="javascript:gotoLoggerPage(this);" type="button" class="btn btn-primary btn-lg">Get your test URL</button></p>
+            <p class="text-center">
+                <button onclick="javascript:getKeyGoLoggerPage(this);" type="button" class="btn btn-primary btn-lg">Get your
+                    test URL
+                </button>
+            </p>
 
             <p class="text-center"><strong>- or -</strong></p>
 
@@ -103,10 +96,17 @@
                 <p class="text-center">Get your key and use it anywhere in your HTTP call:</p>
 
                 <div class="row">
-                    <div class="col-xs-3"><button onclick="javascript:getMarkerKey('marker_key_field');" class="btn btn-info">Get marker key</button></div>
-                        <div class="col-xs-9"><div class="input-group"><input id="marker_key_field" type="text" class="form-control" disabled placeholder="HTTP marker key" style="text-align:center;">
+                    <div class="col-xs-3">
+                        <button onclick="javascript:getMarkerKey('marker_key_field');" class="btn btn-info">Get marker
+                            key
+                        </button>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="input-group"><input id="marker_key_field" type="text" class="form-control" disabled
+                                                        placeholder="HTTP marker key" style="text-align:center;">
                         <span class="input-group-btn">
-                            <button id="copy-button" data-clipboard-text="Copy Me!" title="Click to copy me." class="btn btn-primary">copy</button>
+                            <button id="copy-button" data-clipboard-text="Copy Me!" title="Click to copy me."
+                                    class="btn btn-primary">copy</button>
                         </span>
                         </div>
                     </div>
@@ -120,20 +120,19 @@
                 <!-- Button trigger modal -->
                 <div style="width: 50%; margin: 0 auto;">
                     <p class="text-center">
-                        <button href="#logger" class="fancybox btn btn-primary btn-lg">Show me the calls</button>
-
+                        <button href="#logger" onclick="javascript:gotoLoggerPage();" id="showmethecallsbutton" class="fancybox btn btn-primary btn-lg disabled">Show me the calls</button>
                     </p>
                 </div>
                 <br/><br/>
 
                 <p class="">
                     In your path:
-                    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
+                <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
                 </p>
 
                 <p class="">
                     In your HTTP headers:
-                    <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
+                <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
                 </p>
 
                 <p class="">
@@ -145,6 +144,7 @@
         </div>
     </div>
 </div>
+{% include footer.html %}
 {% include ga.html %}
 </body>
 </html>

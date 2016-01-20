@@ -4,16 +4,8 @@
     <meta charset="UTF-8">
     <title>HTTP log</title>
 
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+    {% include head_section.html %}
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
@@ -107,14 +99,16 @@
             if (ws.bufferedAmount == 0)
                 var ping = JSON.stringify({'type': 'ping'})
                 ws.send(ping);
-        }, 10000 );
+        }, 10000);
     });
 </script>
 <body>
+{% include navbar.html %}
 <div class="container">
 
     <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items[0] }}</strong></pre>
     <div style="text-align: left">
+        <br/>
         <p>
         <button type="button" class="btn btn-default btn-sm" onclick="javascript:clearLog();">clear</button>
         </p>
@@ -124,6 +118,7 @@
 
     </div>
 </div>
+{% include footer.html %}
 {% include ga.html %}
 </body>
 </html>
