@@ -32,6 +32,7 @@ def generate_marker_key():
     unique_hash = hex(random.getrandbits(128))[2:10]
     return unique_hash
 
+
 class BaseHashViewRequestHandler(tornado.web.RequestHandler):
     redis_async_connection = None
     redis_sync_connection = None
