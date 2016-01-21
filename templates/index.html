@@ -112,35 +112,37 @@
                     </div>
 
                 </div>
-
                 <br/>
-
-                <p class="text-center"><strong>- finally -</strong></p>
-
-                <!-- Button trigger modal -->
-                <div style="width: 50%; margin: 0 auto;">
-                    <p class="text-center">
-                        <button href="#logger" onclick="javascript:gotoLoggerPage();" id="showmethecallsbutton" class="fancybox btn btn-primary btn-lg disabled">Show me the calls</button>
-                    </p>
-                </div>
-                <br/><br/>
-
-                <p class="">
-                    In your path:
-                <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
-                </p>
-
-                <p class="">
-                    In your HTTP headers:
-                <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
-                </p>
-
-                <p class="">
-                    Put it in the HTTP body with:
-                <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://<span class="self_hostname"></span>/testmycall/</pre>
-                </p>
-
             </div>
+
+
+            <div class="row" style="width: 50%; margin: 0 auto;">
+
+                    <p class="">
+                        In your path:
+                    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
+                    </p>
+
+                    <p class="">
+                        In your HTTP headers:
+                    <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
+                    </p>
+
+                    <p class="">
+                        Put it in the HTTP body with:
+                    <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://<span class="self_hostname"></span>/testmycall/</pre>
+                    </p>
+            </div>
+
+            <p class="text-center"><strong>- finally -</strong></p>
+
+            <!-- Button trigger modal -->
+            <div style="width: 50%; margin: 0 auto;">
+                <p class="text-center">
+                    <button href="#logger" onclick="javascript:gotoLoggerPage();" id="showmethecallsbutton" class="fancybox btn btn-primary btn-lg disabled">Show me the calls</button>
+                </p>
+            </div>
+            <br/>
         </div>
     </div>
 </div>

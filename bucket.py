@@ -9,6 +9,7 @@ import random
 import json
 import redis
 import os
+import uuid
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
@@ -30,7 +31,8 @@ def generate_marker_key():
     Generate a key
     :return:
     """
-    unique_hash = hex(random.getrandbits(128))[2:10]
+    #unique_hash = hex(random.getrandbits(128))[2:10]
+    unique_hash = str(uuid.uuid4().hex)[:10]
     return unique_hash
 
 

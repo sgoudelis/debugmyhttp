@@ -1,7 +1,30 @@
 .footer {
-    background-color: lightgrey;
+    background-color: #464646;
+    color: #fff;
+    border-top: 1px solid #000;
+    width: 100%;
+    min-height: 100px;
+    bottom: 0;
+    left: 0;
 }
 
 .navbar-inverse {
     border-radius: 0px;
+}
+
+.centereddiv {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.inlinelist ul
+{
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.inlinelist ul li {
+    display: inline;
+    margin-left: 70px;
 }
