@@ -1,11 +1,12 @@
 .footer {
     background-color: #464646;
-    color: #fff;
+    color: #bababa;
     border-top: 1px solid #000;
     width: 100%;
-    min-height: 100px;
+    min-height: 80px;
     bottom: 0;
     left: 0;
+    padding: 20px;
 }
 
 .navbar-inverse {
@@ -31,16 +32,16 @@
 
 #log {
     overflow-y: auto;
-    min-height: 500px;
+    min-height: 600px;
 }
 
 .nopadding {
     padding: 0px !important;
 }
 
-pre {
+pre.httprequest_container {
     margin: 0 0 0px;
-
+    background-color: transparent;
 }
 
 .httprequest_container {
@@ -53,4 +54,17 @@ pre {
     background-color: #d3d3d3;
     color: black;
     font-weight: bold;
+}
+
+#status_bar span {
+    font-family: "Courier New";
+    font-weight: bold;
+}
+
+.panel-title.small-font {
+    font-size: 12px;
+}
+
+#status_bar table td {
+    vertical-align: middle;
 }
