@@ -56,9 +56,17 @@ pre.httprequest_container {
     font-weight: bold;
 }
 
-#status_bar span {
-    font-family: "Courier New";
+.status_text span {
     font-weight: bold;
+}
+
+.status_text {
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+    color: #bababa;
+}
+
+#socket_status {
+    display: none;
 }
 
 .panel-title.small-font {

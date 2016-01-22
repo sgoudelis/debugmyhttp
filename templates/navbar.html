@@ -16,8 +16,13 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-
+            <ul class="nav navbar-nav" id="socket_status">
+                <li style="width: 404px; margin: 15px; padding-left: 195px;">
+                    <span class="status_text">Status: <span class="status_value"></span></span>
+                </li>
+                <li style="float: right; margin: 14px;">
+                    <button type="button" class="btn btn-info btn-xs" onclick="javascript:clearLog();">clear log</span></button>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

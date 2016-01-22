@@ -26,7 +26,7 @@
         var $log = $("div#log");
         ws.onopen = function(){
             showLogItem('Websocket open...');
-            $('span#status_text').html('listening...');
+            $('span.status_value').html('listening...');
         };
 
         ws.onmessage = function(ev){
@@ -36,12 +36,12 @@
 
         ws.onclose = function(ev){
             showLogItem('closed');
-            $('span#status_text').html('not listening...');
+            $('span.status_value').html('not listening...');
         };
 
         ws.onerror = function(ev){
             showLogItem('error occurred');
-            $('span#status_text').html('error occurred');
+            $('span.status_value').html('error occurred');
         };
 
         function showLogItem(payload) {
@@ -74,6 +74,16 @@
         }, 10000);
     });
 </script>
+
+<style type="text/css">
+
+    #socket_status {
+        display: inherit !important;
+    }
+
+</style>
+
+
 <body>
 {% include navbar.html %}
 <div class="container">
@@ -81,22 +91,6 @@
         Use this URL in your application
     </p>
     <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items[0] }}</strong></pre>
-    <br>
-    <div style="text-align: left">
-        <div id="status_bar" class="panel panel-default" style="padding: 7px;">
-            <table class="table">
-                <tr>
-                    <td>
-                        Status: <span id="status_text"></span>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-info btn-sm" onclick="javascript:clearLog();">clear</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
     <div id="log">
 
     </div>
