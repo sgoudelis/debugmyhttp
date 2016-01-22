@@ -22,7 +22,7 @@
         // set the hostname in the examples
         $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
 
-        var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items[0] }}/ws');
+        var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items["bucket"] }}/ws');
         var $log = $("div#log");
         ws.onopen = function(){
             showLogItem('Websocket open...');
@@ -110,7 +110,7 @@
     <p>
         Use this URL in your application
     </p>
-    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items[0] }}</strong></pre>
+    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items['bucket'] }}</strong></pre>
     <div id="log">
 
     </div>

@@ -10,7 +10,7 @@ import json
 import redis
 import os
 import uuid
-from tornado import gen
+from tornado import gen, template
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
 tornado.options.define("port", default=5000, help="port to listen on", type=int)
@@ -110,8 +110,8 @@ class LogView(tornado.web.RequestHandler):
     View for the logger where the user will observe HTTP calls
     """
     def get(self, bucket):
-        items = [bucket]
-        self.render("templates/log.html", title="Logger", items=items)
+        vals = {'bucket': bucket, 'request_limit': tornado.options.options.requestlimit}
+        self.render("templates/log.html", title="Logger", items=vals)
 
 
 class HomeView(tornado.web.RequestHandler):
@@ -119,8 +119,8 @@ class HomeView(tornado.web.RequestHandler):
     View for the logger where the user will observe HTTP calls
     """
     def get(self):
-        items = [tornado.options.options.requestlimit]
-        self.render("templates/index.html", title="Logger", items=items)
+        vals = {'bucket': "", 'request_limit': tornado.options.options.requestlimit}
+        self.render("templates/index.html", title="Logger", items=vals)
 
 
 class LogWebSocket(BaseLogWebSocket):
