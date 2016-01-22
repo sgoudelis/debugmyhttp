@@ -68,3 +68,44 @@ pre.httprequest_container {
 #status_bar table td {
     vertical-align: middle;
 }
+
+@media only screen and (max-width: 750px) {
+    .flexy-column {
+        width: 600px !important;
+    }
+
+
+}
+
+@media only screen and (max-width: 650px) {
+    .flexy-column {
+        width: 550px !important;
+    }
+
+    #marker_key_field {
+        width: 300px;
+        float: right;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .flexy-column {
+        width: 400px !important;
+    }
+
+    #marker_key_field {
+        width: 200px;
+        float: right;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .flexy-column {
+        width: 350px !important;
+    }
+
+    #marker_key_field {
+        width: 150px;
+        float: right;
+    }
+}
