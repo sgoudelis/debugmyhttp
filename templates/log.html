@@ -45,6 +45,7 @@
         function showLogItem(payload) {
             if (payload['request']) {
                 printHttpRequest(payload);
+                receivingIndication();
             }  else if (payload['type'] == 'alert') {
                 if(payload['event'] == "limit_reached") {
                     stopCapturing();
@@ -81,6 +82,16 @@
             console.info("dfdfdf");
             $('span.status_value').html('not capturing');
         }
+
+        function receivingIndication() {
+            var status_value = $('span.status_value');
+            var original_value = status_value.html();
+            status_value.html('receiving traffic');
+            setTimeout(function() {
+                status_value.html(original_value);
+            }, 500);
+        }
+
     });
 </script>
 
