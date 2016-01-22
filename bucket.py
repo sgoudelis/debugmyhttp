@@ -19,7 +19,7 @@ tornado.options.define("redisport", default=6379, help="redis port", type=int)
 tornado.options.define("redisdb", default=0, help="redis database", type=int)
 tornado.options.define("redispassword", default="", help="redis server password", type=str)
 tornado.options.define("channelttl", default=3000, help="redis hash key ttl", type=int)
-tornado.options.define("clientlimit", default=40, help="client keys limit per ip", type=int)
+tornado.options.define("clientlimit", default=10, help="client keys limit per ip", type=int)
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
 
 hash_set_prefix = "client#"
@@ -119,7 +119,7 @@ class HomeView(tornado.web.RequestHandler):
     View for the logger where the user will observe HTTP calls
     """
     def get(self):
-        items = []
+        items = [tornado.options.options.requestlimit]
         self.render("templates/index.html", title="Logger", items=items)
 
 
