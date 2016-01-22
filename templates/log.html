@@ -35,24 +35,27 @@
         };
 
         ws.onclose = function(ev){
-            showLogItem('closed');
-            $('span.status_value').html('not capturing');
+            stopCapturing();
         };
 
         ws.onerror = function(ev){
-            showLogItem('error occurred');
             $('span.status_value').html('error occurred');
         };
 
         function showLogItem(payload) {
             if (payload['request']) {
                 printHttpRequest(payload);
-                $('#counter').html(parseInt($('#counter').html())+1);
-            }  else if (payload['type']=='alert') {
+            }  else if (payload['type'] == 'alert') {
+                if(payload['event'] == "limit_reached") {
+                    stopCapturing();
+                }
                 $log.prepend('<div class="alert alert-danger" role="alert"><strong>Alert! </strong>'+payload['message']+'</div>');
             } else if (payload['message']) {
                 $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
             }
+
+            $('#counter').html(payload['request_count']);
+            $('#request_limit').html(payload['request_limit']);
         }
 
         function printHttpRequest(request) {
@@ -73,6 +76,11 @@
                 var ping = JSON.stringify({'type': 'ping'})
                 ws.send(ping);
         }, 10000);
+
+        function stopCapturing() {
+            console.info("dfdfdf");
+            $('span.status_value').html('not capturing');
+        }
     });
 </script>
 

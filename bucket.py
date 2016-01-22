@@ -20,6 +20,7 @@ tornado.options.define("redisdb", default=0, help="redis database", type=int)
 tornado.options.define("redispassword", default="", help="redis server password", type=str)
 tornado.options.define("channelttl", default=3000, help="redis hash key ttl", type=int)
 tornado.options.define("clientlimit", default=40, help="client keys limit per ip", type=int)
+tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
@@ -139,11 +140,28 @@ class LogWebSocket(BaseLogWebSocket):
         # connect to redis
         self.redis_async_connection.connect()
 
+        # check for limits first
+        self.redis_async_connection.get('counter#'+bucket, self.close_connection_on_limit)
+
         # subscribe
         self.redis_async_connection.subscribe(channel_name)
 
         self.redis_async_connection.listen(self.on_message)
         logging.info('New viewer connected to observe flow for channel: %s' % channel_name)
+
+    def close_connection_on_limit(self, counter):
+        """
+
+        :param counter:
+        :return:
+        """
+        if int(counter) >= int(tornado.options.options.requestlimit):
+            message = {'type': 'alert', 'message': 'this marker key is expired!',
+                       'request_limit': tornado.options.options.requestlimit,
+                       'request_count': counter}
+            self.write_message(message)
+
+        return
 
     def on_message(self, message):
         try:

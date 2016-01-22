@@ -140,10 +140,13 @@ def main():
                     request_count = 0
 
                 # check to see if we are over the limit
-                if int(request_count) > int(options.requestlimit):
+                if int(request_count) >= int(options.requestlimit):
                     message = "Limit of %s reached for key %s " % (options.requestlimit, client_hash)
                     log(message, True)
-                    redis_conn.publish(channel_name, json.dumps({'message': message, 'type': 'alert'}))
+                    redis_conn.publish(channel_name, json.dumps({'message': message, 'type': 'alert',
+                                                                 'event': 'limit_reached',
+                                                                 'request_limit': options.requestlimit,
+                                                                 'request_count': request_count}))
 
                     # delete this key and stop looking for these requests
                     redis_conn.delete(hash_set_prefix+str(client_hash))
@@ -169,7 +172,8 @@ def main():
                         raw_http_request = raw_http_request[idx:]
                         break
                 log(raw_http_request)
-                http_request = {'request': raw_http_request, 'source_ip': source_ip}
+                http_request = {'request': raw_http_request, 'source_ip': source_ip,
+                                'request_limit': options.requestlimit, 'request_count': request_count}
 
                 # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))

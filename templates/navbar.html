@@ -16,21 +16,20 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
             </ul>
+
             <ul class="nav navbar-nav" id="socket_status">
                 <li style="width: 404px; margin: 14px;">
                     <span class="status_text">Status: <span class="status_value"></span></span>
                 </li>
             </ul>
 
-
             <ul class="nav navbar-nav navbar-right">
                 <li style="float: right; margin: 14px;">
                     <button type="button" class="btn btn-info btn-xs" onclick="javascript:clearLog();">clear log</span></button>
                 </li>
                 <li style="float: right; margin: 14px;">
-                    <span class="badge" id="counter">0</span>
+                    <span class="badge"><span id="counter">0</span><span style="color: lightgrey;"> / </span><span id="request_limit">0</span></span>
                 </li>
-
 
             </ul>
 
