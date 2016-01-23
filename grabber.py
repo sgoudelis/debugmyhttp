@@ -100,13 +100,32 @@ def get_raw_http_request(packet):
     return raw_http_request
 
 
+def html_encode(c):
+    """
+    Simple HTML encoding to defuse JS tags
+    :param c:
+    :return:
+    """
+    html_chars = (
+        ('&', '&amp;'),
+        ("'", '&#39;'),
+        ('"', '&quot;'),
+        ('>', '&gt;'),
+        ('<', '&lt;'),
+    )
+    for code in html_chars:
+        c = c.replace(code[0], code[1])
+    return c
+
+
 def main():
     """
     Main loop
     :return:
     """
 
-    http_methods = ['GET', 'POST', 'UPDATE', 'PUT', 'DELETE', 'get', 'post', 'update', 'put', 'delete']
+    http_methods = ['GET', 'POST', 'UPDATE', 'PUT', 'DELETE', 'HEAD', 'OPTIONS',
+                    'get', 'post', 'update', 'put', 'delete', 'head', 'options']
 
     devices = findalldevs()
     print("Available devices: %s " % devices)
@@ -155,7 +174,6 @@ def main():
                 log("Found HTTP request for hash %s" % client_hash, True)
 
                 # extract source ip address
-
                 decoder = EthDecoder()
                 ethernet_frame = decoder.decode(packet)
                 ip_header = ethernet_frame.child()
@@ -166,11 +184,28 @@ def main():
                 elif _platform == "win32":
                     pass
 
+                """
+                # try to find start of HTTP request in the raw string
+                pos = 0
+                print raw_http_request
+                for i in range(0, len(raw_http_request)):
+                    print raw_http_request[i]
+                    if 31 < ord(raw_http_request[i]) < 127:
+                        pos = i
+                        print "char: %s pos: %s ord: %s" % (raw_http_request[i], pos, ord(raw_http_request[i]))
+                        break
+                """
+
+                # try to find start of HTTP request based on HTTP verbs
                 for http_method in http_methods:
                     idx = raw_http_request.find(http_method)
                     if idx > -1:
                         raw_http_request = raw_http_request[idx:]
                         break
+
+                # HTML encode
+                raw_http_request = html_encode(raw_http_request)
+
                 log(raw_http_request)
                 http_request = {'request': raw_http_request, 'source_ip': source_ip,
                                 'request_limit': options.requestlimit, 'request_count': request_count}

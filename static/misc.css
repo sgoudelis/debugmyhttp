@@ -51,6 +51,7 @@ pre.httprequest_container {
 
 .httprequest_header {
     padding: 10px;
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
     background-color: #d3d3d3;
     color: black;
     font-weight: bold;
