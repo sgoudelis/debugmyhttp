@@ -4,6 +4,7 @@ from impacket.ImpactDecoder import *
 import argparse
 import redis
 import json
+import datetime
 from sys import platform as _platform
 
 parser = argparse.ArgumentParser(description='command line options')
@@ -208,7 +209,8 @@ def main():
 
                 log(raw_http_request)
                 http_request = {'request': raw_http_request, 'source_ip': source_ip,
-                                'request_limit': options.requestlimit, 'request_count': request_count}
+                                'request_limit': options.requestlimit, 'request_count': request_count,
+                                'datetime': str(datetime.datetime.utcnow())}
 
                 # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))

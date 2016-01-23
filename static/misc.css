@@ -54,7 +54,11 @@ pre.httprequest_container {
     font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
     background-color: #d3d3d3;
     color: black;
-    font-weight: bold;
+    font-size: 14px;
+}
+
+pre code {
+    background-color: transparent !important;
 }
 
 .status_text span {

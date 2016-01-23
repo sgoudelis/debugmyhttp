@@ -60,16 +60,20 @@
         }
 
         function printHttpRequest(request) {
+            var firstline = request['request'].split('\n')[0];
             var html = "";
             html += '<div class="panel panel-default">';
             html += '<div class="panel-heading httprequest_header">';
-            html += '<h5 class="panel-title small-font"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+'From: '+request['source_ip']+'</h5>';
+            html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+firstline+'</span>' + '<span style="float: right;">'+request['datetime']+' UTC</span>';
             html += '</div>';
-            html += '<div class="nopadding panel-body"><pre class="httprequest_container">';
+            html += '<div class="nopadding panel-body"><pre class="httprequest_container"><code class="http">';
             html += request['request'];
-            html += '</pre></div>';
+            html += '</code></pre></div>';
             html += '</div>';
             $log.prepend(html);
+            $('pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
         }
 
         setInterval(function() {
@@ -102,7 +106,6 @@
     }
 
 </style>
-
 
 <body>
 {% include navbar.html %}
