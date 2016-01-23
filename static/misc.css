@@ -86,8 +86,6 @@ pre code {
     .flexy-column {
         width: 600px !important;
     }
-
-
 }
 
 @media only screen and (max-width: 650px) {
@@ -98,6 +96,12 @@ pre code {
     #marker_key_field {
         width: 300px;
         float: right;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .flexy-column {
+        width: 500px !important;
     }
 }
 
