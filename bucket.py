@@ -5,12 +5,11 @@ import tornado.httpserver
 import tornado.options
 import brukva
 import logging
-import random
 import json
 import redis
 import os
 import uuid
-from tornado import gen, template
+from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
 tornado.options.define("port", default=5000, help="port to listen on", type=int)
@@ -18,7 +17,7 @@ tornado.options.define("redishost", default="127.0.0.1", help="redis server", ty
 tornado.options.define("redisport", default=6379, help="redis port", type=int)
 tornado.options.define("redisdb", default=0, help="redis database", type=int)
 tornado.options.define("redispassword", default="", help="redis server password", type=str)
-tornado.options.define("channelttl", default=3000, help="redis hash key ttl", type=int)
+tornado.options.define("channelttl", default=3600, help="redis hash key ttl", type=int)
 tornado.options.define("clientlimit", default=10, help="client keys limit per ip", type=int)
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
 
@@ -99,6 +98,9 @@ class GenerateHashView(BaseHashViewRequestHandler):
                                          json.dumps(value))
 
         # set the ip as key to keep track how many key there are for that ip
+        if not self.redis_sync_connection.exists(client_ip_prefix+str(client_ip)):
+            self.redis_sync_connection.setex(client_ip_prefix+str(client_ip), tornado.options.options.channelttl, 1)
+
         self.redis_sync_connection.incrby(client_ip_prefix+str(client_ip), 1)
 
         # finish the request

@@ -1,5 +1,4 @@
 from pcapy import open_live, findalldevs, PcapError
-from impacket.ImpactPacket import *
 from impacket.ImpactDecoder import *
 import argparse
 import redis
@@ -35,6 +34,9 @@ parser.add_argument('-c', '--promiscuous', dest='promiscuous', action='store_tru
 
 parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
                     default=50, help='request limit per key')
+
+parser.add_argument('-e', '--channelttl', dest='channelttl', action='store',
+                    default=3600, help='TTL for the channel (set of keys in redis per session)')
 
 options = parser.parse_args()
 
@@ -216,6 +218,9 @@ def main():
                 redis_conn.publish(channel_name, json.dumps(http_request))
 
                 # increase count for hash key
+                if not redis_conn.exists(counter_prefix+str(client_hash)):
+                    redis_conn.setex(counter_prefix+str(client_hash), 1, options.channelttl)
+
                 redis_conn.incrby(counter_prefix+str(client_hash), 1)
 
 
