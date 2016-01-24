@@ -14,11 +14,47 @@
             $log.html("");
         }
     </script>
-
 </head>
 
-<script>
+<script type="text/javascript">
+
+    var stored_filterArray = localStorage.getItem('debugmyhttp_filter_checkboxes');
+
+    if(stored_filterArray) {
+        var filterArray = JSON.parse(stored_filterArray);
+    } else {
+        var filterArray = {
+            'hide_websocket': true,
+        };
+    }
+
+    function stopCapturing() {
+        $('span.status_value').html('not capturing');
+    }
+
+    function receivingIndication() {
+        var status_value = $('span.status_value');
+        status_value.html('receiving traffic');
+        setTimeout(function() {
+            status_value.html("capturing");
+        }, 500);
+    }
+
+    function checkboxChanges() {
+        $("input[id^='hide_']").each(function (i, e){
+            filterArray[e.name] = e.checked;
+        });
+        localStorage.setItem('debugmyhttp_filter_checkboxes', JSON.stringify(filterArray));
+    }
+
     $(document).ready(function(){
+        // set filter checkboxes
+        $("input[id^='hide_']").each(function (i, e){
+            $('input#'+e.name).prop("checked", filterArray[e.name]);
+        });
+
+        $('span#location_hostname').html(document.location.hostname);
+
         // set the hostname in the examples
         $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
 
@@ -42,22 +78,11 @@
             $('span.status_value').html('error occurred');
         };
 
-        function showLogItem(payload) {
-            if (payload['request']) {
-                printHttpRequest(payload);
-                receivingIndication();
-            }  else if (payload['type'] == 'alert') {
-                if(payload['event'] == "limit_reached") {
-                    stopCapturing();
-                }
-                $log.prepend('<div class="alert alert-danger" role="alert"><strong>Alert! </strong>'+payload['message']+'</div>');
-            } else if (payload['message']) {
-                $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
-            }
-
-            $('#counter').html(payload['request_count']);
-            $('#request_limit').html(payload['request_limit']);
-        }
+        setInterval(function() {
+            if (ws.bufferedAmount == 0)
+                var ping = JSON.stringify({'type': 'ping'})
+            ws.send(ping);
+        }, 10000);
 
         function printHttpRequest(request) {
             var firstline = request['request'].split('\n')[0];
@@ -76,22 +101,29 @@
             });
         }
 
-        setInterval(function() {
-            if (ws.bufferedAmount == 0)
-                var ping = JSON.stringify({'type': 'ping'})
-                ws.send(ping);
-        }, 10000);
+        function showLogItem(payload) {
+            if (payload['request']) {
+                // check if a filter is in effect
+                if (filterArray['hide_websocket']) {
+                    var loc = payload['request'].indexOf('Upgrade: websocket');
+                    if (loc > -1) {
+                        return
+                    }
+                }
 
-        function stopCapturing() {
-            $('span.status_value').html('not capturing');
-        }
+                printHttpRequest(payload);
+                receivingIndication();
+            }  else if (payload['type'] == 'alert') {
+                if(payload['event'] == "limit_reached") {
+                    stopCapturing();
+                }
+                $log.prepend('<div class="alert alert-danger" role="alert"><strong>Alert! </strong>'+payload['message']+'</div>');
+            } else if (payload['message']) {
+                $log.prepend("<span>"+payload.message+"</span>" + "<br/>");
+            }
 
-        function receivingIndication() {
-            var status_value = $('span.status_value');
-            status_value.html('receiving traffic');
-            setTimeout(function() {
-                status_value.html("capturing");
-            }, 500);
+            $('#counter').html(payload['request_count']);
+            $('#request_limit').html(payload['request_limit']);
         }
     });
 </script>
@@ -120,10 +152,27 @@
             Use this URL in your application
         </p>
         <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items['bucket'] }}</strong></pre>
+        <div class="panel panel-default">
+            <table class="table">
+                <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" onchange="checkboxChanges()" id="hide_websocket" name="hide_websocket" value="1">
+                                Hide WebSocket requests
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div id="log">
 
         </div>
-        <div style="background-color: #fff; margin-bottom: 60px;" class="spot-im-frame-inpage" data-post-id="debugmyhttp-{{ items['bucket'] }}"></div>
+        <div style="background-color: #fff; margin-bottom: 0px;" class="spot-im-frame-inpage" data-post-id="debugmyhttp-{{ items['bucket'] }}"></div>
     </div>
 
 </div>
