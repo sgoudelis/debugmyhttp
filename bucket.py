@@ -157,8 +157,8 @@ class LogWebSocket(BaseLogWebSocket):
         :param counter:
         :return:
         """
-        if int(counter) >= int(tornado.options.options.requestlimit):
-            message = {'type': 'alert', 'message': 'this marker key is expired!',
+        if counter is None or int(counter) >= int(tornado.options.options.requestlimit):
+            message = {'type': 'alert', 'message': 'this marker key is expired or does not exist',
                        'request_limit': tornado.options.options.requestlimit,
                        'request_count': counter}
             self.write_message(message)
