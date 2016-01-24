@@ -9,6 +9,7 @@ import json
 import redis
 import os
 import uuid
+import time
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
@@ -20,6 +21,7 @@ tornado.options.define("redispassword", default="", help="redis server password"
 tornado.options.define("channelttl", default=3600, help="redis hash key ttl", type=int)
 tornado.options.define("clientlimit", default=10, help="client keys limit per ip", type=int)
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
+tornado.options.define("historylength", default=10, help="list of last N http requests", type=int)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
@@ -129,10 +131,12 @@ class LogWebSocket(BaseLogWebSocket):
     """
     Websockets interface
     """
+    channel_name = None
+
     @gen.engine
     def open(self, bucket='root'):
 
-        channel_name = str(channel_name_prefix+"#"+bucket)
+        self.channel_name = str(channel_name_prefix+"#"+bucket)
 
         self.redis_async_connection = brukva.Client(host=tornado.options.options.redishost,
                                                     port=tornado.options.options.redisport,
@@ -145,11 +149,26 @@ class LogWebSocket(BaseLogWebSocket):
         # check for limits first
         self.redis_async_connection.get('counter#'+bucket, self.close_connection_on_limit)
 
+        # check for limits first
+        self.redis_async_connection.lrange('client_history#'+bucket, 0, tornado.options.options.historylength,
+                                           self.send_request_history)
+
         # subscribe
-        self.redis_async_connection.subscribe(channel_name)
+        self.redis_async_connection.subscribe(self.channel_name)
 
         self.redis_async_connection.listen(self.on_message)
-        logging.info('New viewer connected to observe flow for channel: %s' % channel_name)
+
+        logging.info('New viewer connected to observe flow for channel: %s' % self.channel_name)
+
+    def send_request_history(self, request_list):
+        """
+        send a the last N HTTP requests made
+        :param request_list:
+        :return:
+        """
+
+        for request in reversed(request_list):
+            self.write_message(request)
 
     def close_connection_on_limit(self, counter):
         """
@@ -167,7 +186,9 @@ class LogWebSocket(BaseLogWebSocket):
 
     def on_message(self, message):
         try:
-            if type(message) == unicode:
+            if type(message) == brukva.exceptions.ResponseError:
+                logging.error(message)
+            elif type(message) == unicode:
                 self.write_message(message)
             else:
                 self.write_message(message.body)

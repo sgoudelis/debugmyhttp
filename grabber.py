@@ -38,6 +38,9 @@ parser.add_argument('-l', '--requestlimit', dest='requestlimit', action='store',
 parser.add_argument('-e', '--channelttl', dest='channelttl', action='store',
                     default=3600, help='TTL for the channel (set of keys in redis per session)')
 
+parser.add_argument('-t', '--historylength', dest='historylength', action='store',
+                    default=10, help='number of HTTP requests to keep into a queue for historical purposes')
+
 options = parser.parse_args()
 
 redis_conn = redis.Redis(host=options.redishost, port=options.redisport, db=options.redisdb,
@@ -213,6 +216,11 @@ def main():
                 http_request = {'request': raw_http_request, 'source_ip': source_ip,
                                 'request_limit': options.requestlimit, 'request_count': request_count,
                                 'datetime': str(datetime.datetime.utcnow())}
+
+                # push into queue for history
+                qlen = redis_conn.lpush('client_history#'+client_hash, json.dumps(http_request))
+                if qlen > options.historylength:
+                    redis_conn.rpop('client_history#'+client_hash)
 
                 # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))
