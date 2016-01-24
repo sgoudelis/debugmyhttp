@@ -89,7 +89,7 @@
             var html = "";
             html += '<div class="panel panel-default">';
             html += '<div class="panel-heading httprequest_header">';
-            html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+firstline+'</span>' + '<span style="float: right;">'+request['datetime']+' UTC</span>';
+            html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+firstline+'</span>' + '<span class="hidden-sm" style="float: right;">'+request['datetime']+' UTC</span>';
             html += '</div>';
             html += '<div class="nopadding panel-body"><pre class="httprequest_container"><code class="http">';
             html += request['request'];
