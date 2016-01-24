@@ -41,6 +41,9 @@ parser.add_argument('-e', '--channelttl', dest='channelttl', action='store',
 parser.add_argument('-t', '--historylength', dest='historylength', action='store',
                     default=10, help='number of HTTP requests to keep into a queue for historical purposes')
 
+parser.add_argument('-k', '--historykeep', dest='historykeep', action='store',
+                    default=86400, help='seconds to keep the queue that contains the history of HTTP requests') # 24h
+
 options = parser.parse_args()
 
 redis_conn = redis.Redis(host=options.redishost, port=options.redisport, db=options.redisdb,
@@ -48,7 +51,8 @@ redis_conn = redis.Redis(host=options.redishost, port=options.redisport, db=opti
 
 hash_set_prefix = 'client#'
 counter_prefix = 'counter#'
-channel_name_prefix = "httprequests#"
+channel_name_prefix = 'httprequests#'
+client_history = 'client_history#'
 
 
 def get_client_hashes():
@@ -218,9 +222,13 @@ def main():
                                 'datetime': str(datetime.datetime.utcnow())}
 
                 # push into queue for history
-                qlen = redis_conn.lpush('client_history#'+client_hash, json.dumps(http_request))
-                if qlen > options.historylength:
-                    redis_conn.rpop('client_history#'+client_hash)
+                if not redis_conn.exists(client_history+client_hash):
+                    redis_conn.lpush(client_history+client_hash, json.dumps(http_request))
+                    redis_conn.expire(client_history+client_hash, options.historykeep)
+                else:
+                    qlen = redis_conn.lpush(client_history+client_hash, json.dumps(http_request))
+                    if qlen > options.historylength:
+                        redis_conn.rpop(client_history+client_hash)
 
                 # push the http request down the pipe
                 redis_conn.publish(channel_name, json.dumps(http_request))

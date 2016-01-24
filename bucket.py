@@ -25,8 +25,8 @@ tornado.options.define("historylength", default=10, help="list of last N http re
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
-channel_name_prefix = "httprequests"
-
+channel_name_prefix = 'httprequests#'
+client_history = 'client_history#'
 
 def generate_marker_key():
     """
@@ -136,7 +136,7 @@ class LogWebSocket(BaseLogWebSocket):
     @gen.engine
     def open(self, bucket='root'):
 
-        self.channel_name = str(channel_name_prefix+"#"+bucket)
+        self.channel_name = str(channel_name_prefix+bucket)
 
         self.redis_async_connection = brukva.Client(host=tornado.options.options.redishost,
                                                     port=tornado.options.options.redisport,
