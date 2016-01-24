@@ -45,7 +45,7 @@ pre.httprequest_container {
 }
 
 .httprequest_container {
-    font-size: 11px;
+    font-size: 12px;
     border: 0px none !important;
 }
 
@@ -71,6 +71,10 @@ pre code {
 }
 
 #socket_status {
+    display: none;
+}
+
+#toolbar_indicator {
     display: none;
 }
 
