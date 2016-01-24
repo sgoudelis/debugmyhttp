@@ -113,14 +113,19 @@
 
 <body>
 {% include navbar.html %}
-<div class="container">
-    <p>
-        Use this URL in your application
-    </p>
-    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items['bucket'] }}</strong></pre>
-    <div id="log">
 
+<div class="light_background">
+    <div class="container">
+        <p>
+            Use this URL in your application
+        </p>
+        <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>{{ items['bucket'] }}</strong></pre>
+        <div id="log">
+
+        </div>
+        <div style="background-color: #fff; " class="spot-im-frame-inpage" data-post-id="debugmyhttp"></div>
     </div>
+
 </div>
 {% include footer.html %}
 {% include ga.html %}

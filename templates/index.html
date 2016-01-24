@@ -73,79 +73,90 @@
 
 <body>
 {% include navbar.html %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-14">
 
-            <h1 class="text-center">Want to debug your HTTP calls made by your apps? </h1>
-            <h3 class="text-center">Get a key and use it in your HTTP calls</h3>
+<div class="light_background">
 
-            <br/>
-            <br/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-14">
 
-            <p class="text-center">
-                <button onclick="javascript:getKeyGoLoggerPage(this);" type="button" class="btn btn-primary btn-lg">Get your
-                    test URL
-                </button>
-            </p>
+                <h1 class="text-center">Want to debug your HTTP calls made by your apps? </h1>
+                <h3 class="text-center">Get a key and use it in your HTTP calls</h3>
 
-            <p class="text-center"><strong>- or -</strong></p>
+                <br/>
+                <br/>
 
-            <div class="flexy-column" style="width: 600px; margin: 0 auto;">
+                <p class="text-center">
+                    <button onclick="javascript:getKeyGoLoggerPage(this);" type="button" class="btn btn-primary btn-lg">Get your
+                        test URL
+                    </button>
+                </p>
 
-                <p class="text-center">Get your key and use it anywhere in your HTTP call:</p>
+                <p class="text-center"><strong>- or -</strong></p>
 
-                <div class="row">
-                    <div class="col-xs-3">
-                        <button onclick="javascript:getMarkerKey('marker_key_field');" class="btn btn-success">Get marker
-                            key
-                        </button>
-                    </div>
-                    <div class="col-xs-9">
-                        <div class="input-group text-right"><input id="marker_key_field" type="text" class="form-control" disabled
-                                                        placeholder="HTTP marker key" style="text-align:center;">
-                        <span class="input-group-btn">
-                            <button id="copy-button" data-clipboard-text="Copy Me!" title="Click to copy me."
-                                    class="btn btn-primary">copy</button>
-                        </span>
+                <div class="flexy-column" style="width: 600px; margin: 0 auto;">
+
+                    <p class="text-center">Get your key and use it anywhere in your HTTP call:</p>
+
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <button onclick="javascript:getMarkerKey('marker_key_field');" class="btn btn-success">Get marker
+                                key
+                            </button>
                         </div>
+                        <div class="col-xs-9">
+                            <div class="input-group text-right"><input id="marker_key_field" type="text" class="form-control" disabled
+                                                            placeholder="HTTP marker key" style="text-align:center;">
+                            <span class="input-group-btn">
+                                <button id="copy-button" data-clipboard-text="Copy Me!" title="Click to copy me."
+                                        class="btn btn-primary">copy</button>
+                            </span>
+                            </div>
+                        </div>
+
                     </div>
+                    <br/>
+                </div>
+
+
+                <div class="flexy-column" class="row" style="width: 600px; margin: 0 auto;">
+
+                        <p class="">
+                            In your path:
+                        <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
+                        </p>
+
+                        <p class="">
+                            In your HTTP headers:
+                        <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
+                        </p>
+
+                        <p class="">
+                            Put it in the HTTP body with:
+                        <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://<span class="self_hostname"></span>/testmycall/</pre>
+                        </p>
+                </div>
+
+                <p class="text-center"><strong>- finally -</strong></p>
+
+                <!-- Button trigger modal -->
+                <div style="width: 50%; margin: 0 auto;">
+                    <p class="text-center">
+                        <button href="#logger" onclick="javascript:gotoLoggerPage();" id="showmethecallsbutton" class="fancybox btn btn-primary btn-lg disabled">Show me the calls</button>
+                    </p>
+
+
 
                 </div>
+                <div style="background-color: #fff; " class="spot-im-frame-inpage" data-post-id="debugmyhttp"></div>
                 <br/>
+
             </div>
 
-
-            <div class="flexy-column" class="row" style="width: 600px; margin: 0 auto;">
-
-                    <p class="">
-                        In your path:
-                    <pre>http://<span class="self_hostname"></span>/testmycall/newdata/<strong>&lt;key&gt;</strong></pre>
-                    </p>
-
-                    <p class="">
-                        In your HTTP headers:
-                    <pre>X-Debug-My-HTTP: <strong>&lt;key&gt;</strong></pre>
-                    </p>
-
-                    <p class="">
-                        Put it in the HTTP body with:
-                    <pre>$ curl -X POST -d '<strong>&lt;key&gt;</strong>' http://<span class="self_hostname"></span>/testmycall/</pre>
-                    </p>
-            </div>
-
-            <p class="text-center"><strong>- finally -</strong></p>
-
-            <!-- Button trigger modal -->
-            <div style="width: 50%; margin: 0 auto;">
-                <p class="text-center">
-                    <button href="#logger" onclick="javascript:gotoLoggerPage();" id="showmethecallsbutton" class="fancybox btn btn-primary btn-lg disabled">Show me the calls</button>
-                </p>
-            </div>
-            <br/>
         </div>
     </div>
 </div>
+
 {% include footer.html %}
 {% include ga.html %}
 </body>
