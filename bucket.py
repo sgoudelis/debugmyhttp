@@ -9,7 +9,6 @@ import json
 import redis
 import os
 import uuid
-import time
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)

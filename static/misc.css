@@ -7,9 +7,13 @@ div.light_background {
     padding-top: 20px;
 }
 
+div.comments_area {
+    background-color: #FFF;
+}
+
 .navbar {
     margin-bottom: 0px !important;
- }
+}
 
 .footer {
     background-color: #464646;
