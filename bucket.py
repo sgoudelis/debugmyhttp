@@ -20,7 +20,7 @@ tornado.options.define("redispassword", default="", help="redis server password"
 tornado.options.define("channelttl", default=3600, help="redis hash key ttl", type=int)
 tornado.options.define("clientlimit", default=10, help="client keys limit per ip", type=int)
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
-tornado.options.define("historylength", default=10, help="list of last N http requests", type=int)
+tornado.options.define("historylength", default=50, help="list of last N http requests", type=int)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
