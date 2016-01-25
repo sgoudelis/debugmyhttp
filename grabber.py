@@ -40,7 +40,7 @@ parser.add_argument('-e', '--channelttl', dest='channelttl', action='store',
                     default=3600, help='TTL for the channel (set of keys in redis per session)')
 
 parser.add_argument('-t', '--historylength', dest='historylength', action='store',
-                    default=10, help='number of HTTP requests to keep into a queue for historical purposes')
+                    default=25, help='number of HTTP requests to keep into a queue for historical purposes')
 
 parser.add_argument('-k', '--historykeep', dest='historykeep', action='store',
                     default=86400, help='seconds to keep the queue that contains the history of HTTP requests') # 24h
