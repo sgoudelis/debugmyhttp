@@ -67,11 +67,16 @@ pre.httprequest_container {
 }
 
 .httprequest_header {
-    padding: 10px;
     font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
     background-color: #d3d3d3;
     color: black;
     font-size: 14px;
+    border-bottom: none !important;
+    padding: 6px 9px 3px;
+}
+
+.httprequest_panel {
+    margin-bottom: 9px !important;
 }
 
 pre code {
@@ -146,4 +151,15 @@ pre code {
         width: 150px;
         float: right;
     }
+}
+
+.httprequest_body {
+    display: none;
+    border-top: 1px solid #ddd;
+}
+
+.httprequest_header:hover {
+    background-color: #3a3636;
+    color: #e5e5e5;
+    cursor: pointer;
 }

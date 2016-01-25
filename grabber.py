@@ -4,6 +4,7 @@ import argparse
 import redis
 import json
 import datetime
+import time
 from sys import platform as _platform
 
 parser = argparse.ArgumentParser(description='command line options')
@@ -219,7 +220,7 @@ def main():
                 log(raw_http_request)
                 http_request = {'request': raw_http_request, 'source_ip': source_ip,
                                 'request_limit': options.requestlimit, 'request_count': request_count,
-                                'datetime': str(datetime.datetime.utcnow())}
+                                'datetime': str(datetime.datetime.utcnow()), 'timestamp': time.time()*1000000}
 
                 # push into queue for history
                 if not redis_conn.exists(client_history+client_hash):

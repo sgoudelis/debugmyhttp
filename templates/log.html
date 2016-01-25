@@ -47,6 +47,12 @@
         localStorage.setItem('debugmyhttp_filter_checkboxes', JSON.stringify(filterArray));
     }
 
+    function toggleVisibility(timestamp) {
+        console.info(timestamp);
+        console.info("#body_"+timestamp);
+        $("#body_"+timestamp).toggle();
+    }
+
     $(document).ready(function(){
         // set filter checkboxes
         $("input[id^='hide_']").each(function (i, e){
@@ -87,11 +93,11 @@
         function printHttpRequest(request) {
             var firstline = request['request'].split('\n')[0];
             var html = "";
-            html += '<div class="panel panel-default">';
-            html += '<div class="panel-heading httprequest_header">';
+            html += '<div class="panel panel-default httprequest_panel">';
+            html += '<div class="panel-heading httprequest_header" onclick="toggleVisibility('+request['timestamp']+');">';
             html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+firstline+'</span>' + '<span class="hidden-sm hidden-xs" style="float: right;">'+request['datetime']+' UTC</span>';
             html += '</div>';
-            html += '<div class="nopadding panel-body"><pre class="httprequest_container"><code class="http">';
+            html += '<div class="nopadding panel-body httprequest_body" id="body_'+request['timestamp']+'"><pre class="httprequest_container"><code class="http">';
             html += request['request'];
             html += '</code></pre></div>';
             html += '</div>';
