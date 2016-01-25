@@ -17,13 +17,13 @@
 </head>
 
 <script type="text/javascript">
-
+    var filterArray;
     var stored_filterArray = localStorage.getItem('debugmyhttp_filter_checkboxes');
 
     if(stored_filterArray) {
-        var filterArray = JSON.parse(stored_filterArray);
+        filterArray = JSON.parse(stored_filterArray);
     } else {
-        var filterArray = {
+        filterArray = {
             'hide_websocket': true,
         };
     }
@@ -48,8 +48,6 @@
     }
 
     function toggleVisibility(timestamp) {
-        console.info(timestamp);
-        console.info("#body_"+timestamp);
         $("#body_"+timestamp).toggle();
     }
 
