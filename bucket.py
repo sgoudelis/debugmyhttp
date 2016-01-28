@@ -33,7 +33,6 @@ def generate_marker_key():
     Generate a key
     :return:
     """
-    #unique_hash = hex(random.getrandbits(128))[2:10]
     unique_hash = str(uuid.uuid4().hex)[:10]
     return unique_hash
 

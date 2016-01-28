@@ -31,8 +31,14 @@ div.comments_area {
 }
 
 .centereddiv {
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
+}
+
+.donationsdiv {
+    width: 480px;
+    margin: 0 auto;
+    line-height: 60px;
 }
 
 .inlinelist ul
@@ -49,7 +55,7 @@ div.comments_area {
 
 #log {
     overflow-y: auto;
-    min-height: 600px;
+    min-height: 300px;
 }
 
 .nopadding {
@@ -153,6 +159,12 @@ pre code {
     }
 }
 
+@media only screen and (max-width: 480px) {
+    .donationsdiv {
+        width: 90% !important;
+    }
+}
+
 .httprequest_body {
     display: none;
     border-top: 1px solid #ddd;
@@ -162,4 +174,14 @@ pre code {
     background-color: #3a3636;
     color: #e5e5e5;
     cursor: pointer;
+}
+
+
+
+.COINWIDGETCOM_CONTAINER > a {
+    height: 21px !important;
+}
+
+.COINWIDGETCOM_CONTAINER > span {
+    min-height: 21px !important;
 }
