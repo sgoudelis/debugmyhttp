@@ -15,8 +15,7 @@
                 hljs.highlightBlock(block);
             });
 
-
-            new Clipboard('.btn');
+            new Clipboard('.copy-button');
 
             // set the hostname in the examples
             $('span.self_hostname').html(document.location.hostname + ":" + document.location.port);
@@ -98,7 +97,7 @@
                             <div class="input-group text-right"><input id="marker_key_field" type="text" class="form-control" disabled
                                                             placeholder="HTTP marker key" style="text-align:center;">
                             <span class="input-group-btn">
-                                <button class="btn btn-primary" data-clipboard-target="#marker_key_field">
+                                <button class="btn btn-primary copy-button" data-clipboard-target="#marker_key_field">
                                     copy
                                 </button>
                             </span>
