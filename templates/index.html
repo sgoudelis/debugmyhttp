@@ -49,7 +49,9 @@
 
         function gotoLoggerPage() {
             var marker_key = $('#marker_key_field').val();
-            window.location.href = '//' + document.location.hostname + ":" + document.location.port + '/log/' + marker_key;
+            if(marker_key) {
+                window.location.href = '//' + document.location.hostname + ":" + document.location.port + '/log/' + marker_key;
+            }
         }
     </script>
 
