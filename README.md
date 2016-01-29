@@ -1,6 +1,9 @@
 # debugmyhttp
 Source code of debugmyhttp.com
 
+By using the website (www.debughttp.com) or bt setting up your own using this code, you create test URLs that you can use in your application. The log view of the site will provide you with the HTTP traffic captured (sent to the test URL) in order to debug your application.  
+
+
 What is included:
 
 #### bucket.py
