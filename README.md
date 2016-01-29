@@ -8,11 +8,11 @@ What is included:
 The bucket.py is responsible for serving the homepage, the log page, generating marker keys and providing a WebSocket connection to the browser.
 
 Features
+
 1. Serves the main homepage
 2. Serves the log page
 3. It will generate marker keys
 4. It will provide WebSocket channel to client browser to push the captured HTTP traffic to the user
-
 
 Usage: 
 ```
