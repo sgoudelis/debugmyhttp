@@ -36,7 +36,7 @@ div.comments_area {
 }
 
 .donationsdiv {
-    width: 480px;
+    width: 289px;
     margin: 0 auto;
     line-height: 60px;
 }
@@ -161,8 +161,6 @@ pre code {
     color: #e5e5e5;
     cursor: pointer;
 }
-
-
 
 .COINWIDGETCOM_CONTAINER > a {
     height: 21px !important;
