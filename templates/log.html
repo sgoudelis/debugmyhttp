@@ -60,7 +60,7 @@
         $('span#location_hostname').html(document.location.hostname);
 
         // set the hostname in the examples
-        $('span.self_hostname').html(document.location.hostname+":"+document.location.port);
+        $('span.self_hostname').html(getCurrentPageHostname);
 
         var ws = new WebSocket('ws://'+document.location.hostname+':'+document.location.port+'/log/{{ items["bucket"] }}/ws');
         var $log = $("div#log");

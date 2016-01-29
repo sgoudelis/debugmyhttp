@@ -23,7 +23,7 @@
 
 
             // set the hostname in the examples
-            $('span.self_hostname').html(document.location.hostname + ":" + document.location.port);
+            $('span.self_hostname').html(getCurrentPageHostname());
 
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip();
