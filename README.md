@@ -7,6 +7,12 @@ What is included:
 
 The bucket.py is responsible for serving the homepage, the log page, generating marker keys and providing a WebSocket connection to the browser.
 
+Features
+1. Serves the main homepage
+2. Serves the log page
+3. It will generate marker keys
+4. It will provide WebSocket channel to client browser to push the captured HTTP traffic to the user
+
 Usage: 
 ```
 bucket.py options:
@@ -26,7 +32,15 @@ bucket.py options:
 
 #### grabber.py
 
-The grapper.py is a pcap sniffer. It sniffs for HTTP traffic coming into any interface searching for the marker keys requested by the UI. If the marker key does not exist in REDIS, not traffic is returned. 
+The grapper.py is a pcap sniffer. It sniffs for HTTP traffic coming into any interface searching for the marker keys requested by the UI. If the marker key does not exist in REDIS, no traffic is returned. If marked traffic is found it is pushed into REDIS in a pubsub channel.
+
+Features
+
+1. Requires root to run. It will capture HTTP traffic even malformed HTTP. It will scan for traffic in a specific port (--sniffport)
+2. Will scan HTTP traffic for the marker key
+3. Once traffic is found it will publish it into REDIS
+4. It will also push the captured HTTP traffic into a REDIS set (no more than N HTTP requests, defined by the option -t HISTORYLENGTH) for historical purposes
+5. Once marked HTTP request captured reaches the limit of -l REQUESTLIMIT then the grabber will stop capturing that marked traffic
 
 Usage:
 ```
