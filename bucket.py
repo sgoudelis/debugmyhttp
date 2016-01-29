@@ -21,6 +21,7 @@ tornado.options.define("channelttl", default=3600, help="redis hash key ttl", ty
 tornado.options.define("clientlimit", default=10, help="client keys limit per ip", type=int)
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
 tornado.options.define("historylength", default=50, help="list of last N http requests", type=int)
+tornado.options.define("debug", default=True, help="set Tornado to debug", type=bool)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
@@ -217,7 +218,7 @@ class Application(tornado.web.Application):
         # settings
         settings = dict(
                 auto_reload=True,
-                debug=True,
+                debug=tornado.options.options.debug,
                 static_path=os.path.join(os.path.dirname(__file__), "static")
         )
 
