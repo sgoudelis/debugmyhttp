@@ -93,7 +93,7 @@
             var html = "";
             html += '<div class="panel panel-default httprequest_panel">';
             html += '<div class="panel-heading httprequest_header" onclick="toggleVisibility('+request['timestamp']+');">';
-            html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+firstline+'</span>' + '<span class="hidden-sm hidden-xs" style="float: right;">'+request['datetime']+' UTC</span>';
+            html += '<span><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> '+request['source_ip']+' <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+'<span class="http">'+firstline+'</span>'+'</span>' + '<span class="hidden-sm hidden-xs" style="float: right;">'+request['datetime']+' UTC</span>';
             html += '</div>';
             html += '<div class="nopadding panel-body httprequest_body" id="body_'+request['timestamp']+'"><pre class="httprequest_container"><code class="http">';
             html += request['request'];
