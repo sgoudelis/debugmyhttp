@@ -159,8 +159,8 @@ def main():
     :return:
     """
 
-    http_methods = ['GET', 'POST', 'UPDATE', 'PUT', 'DELETE', 'HEAD', 'OPTIONS',
-                    'get', 'post', 'update', 'put', 'delete', 'head', 'options']
+    http_methods = ['GET', 'POST', 'UPDATE', 'PUT', 'DELETE', 'HEAD', 'OPTIONS']
+    http_methods.extend([method.lower() for method in http_methods])
 
     devices = findalldevs()
     print("Available devices: %s " % devices)
