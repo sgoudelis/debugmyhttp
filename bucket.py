@@ -34,6 +34,7 @@ import json
 import redis
 import os
 import uuid
+import re
 from tornado import gen
 
 tornado.options.define("address", default="0.0.0.0", help="address to listen on", type=str)
@@ -47,6 +48,7 @@ tornado.options.define("clientlimit", default=10, help="client keys limit per ip
 tornado.options.define("requestlimit", default=50, help="request limit per marker key", type=int)
 tornado.options.define("historylength", default=50, help="list of last N http requests", type=int)
 tornado.options.define("debug", default=True, help="set Tornado to debug", type=bool)
+tornado.options.define("origin", default='', help="regex to match, do not set for any origin", type=str)
 
 hash_set_prefix = "client#"
 client_ip_prefix = "client_ip#"
@@ -222,6 +224,12 @@ class LogWebSocket(BaseLogWebSocket):
 
     def on_close(self):
         logging.info('Websocket closed')
+
+    def check_origin(self, origin):
+        if (tornado.options.options.origin == ''):
+            return True
+        else:
+            return bool(re.match(tornado.options.options.origin, origin))
 
 
 class Application(tornado.web.Application):
