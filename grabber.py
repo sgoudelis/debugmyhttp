@@ -30,6 +30,7 @@ import json
 import datetime
 import time
 from sys import platform as _platform
+import socket
 
 parser = argparse.ArgumentParser(description='command line options')
 
@@ -169,10 +170,11 @@ def main():
     sniffer = open_live(options.interface, 65536, options.promiscuous, 100)
     sniffer.setfilter("tcp dst port " +
                       str(options.sniffport)+" and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)")
-
     while True:
         try:
             (header, packet) = sniffer.next()
+        except socket.timeout:
+            continue
         except PcapError:
             continue
         else:

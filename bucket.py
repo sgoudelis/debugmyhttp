@@ -226,7 +226,7 @@ class LogWebSocket(BaseLogWebSocket):
         logging.info('Websocket closed')
 
     def check_origin(self, origin):
-        if (tornado.options.options.origin == ''):
+        if tornado.options.options.origin == '':
             return True
         else:
             return bool(re.match(tornado.options.options.origin, origin))
