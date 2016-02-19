@@ -77,6 +77,18 @@ optional arguments:
                         HTTP requests
 ```
 
+```
+$ sudo python grabber.py -i lo -c -n 5000
+Available devices: ['enp8s0', 'any', 'lo', 'bluetooth-monitor', 'nflog', 'nfqueue', 'usbmon1', 'usbmon2', 'usbmon3', 'usbmon4', 'usbmon5', 'usbmon6'] 
+Capturing on lo...
+Found HTTP request for hash 3080b73b4e
+Found HTTP request for hash 3080b73b4e
+Found HTTP request for hash 3080b73b4e
+Found HTTP request for hash 3080b73b4e
+Found HTTP request for hash 3080b73b4e
+...
+```
+
 #### config/
 
 In the config/ directory you will find sample configuration files for Nginx and Supervisor. 
