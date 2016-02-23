@@ -61,8 +61,12 @@
 
         // set the hostname in the examples
         $('span.self_hostname').html(getCurrentPageHostname);
-
-        var ws = new WebSocket('wss://'+document.location.hostname+':'+document.location.port+'/log/{{ items["bucket"] }}/ws');
+        if (document.location.protocol == 'https') {
+            var websockproto = 'wss';
+        } else {
+            var websockproto = 'ws';
+        }
+        var ws = new WebSocket(websockproto+'://'+document.location.hostname+':'+document.location.port+'/log/{{ items["bucket"] }}/ws');
         var $log = $("div#log");
         ws.onopen = function(){
             showLogItem('Websocket open...');
